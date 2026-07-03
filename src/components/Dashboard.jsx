@@ -59,6 +59,7 @@ function KPIDetail({ kpi, onClose }) {
   const { data: detailed } = useAPI('kpis', kpi.id);
   const [formData, setFormData] = useState({ valor_actual: '', valor_meta: '' });
   const [loading, setLoading] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const handleAddRecord = async () => {
     if (!formData.valor_actual || !formData.valor_meta) {
@@ -85,6 +86,23 @@ function KPIDetail({ kpi, onClose }) {
       alert('❌ Error: ' + err.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!window.confirm(`¿Eliminar KPI "${kpi.nombre}"? Esta acción no se puede deshacer.`)) {
+      return;
+    }
+
+    setDeleting(true);
+    try {
+      await callAPI('kpis', 'DELETE', kpi.id);
+      alert('✅ KPI eliminado');
+      window.location.reload();
+    } catch (err) {
+      alert('❌ Error: ' + err.message);
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -147,6 +165,16 @@ function KPIDetail({ kpi, onClose }) {
             </table>
           </div>
         )}
+
+        <div className="modal-actions">
+          <button
+            onClick={handleDelete}
+            disabled={deleting}
+            className="btn-delete"
+          >
+            {deleting ? '⏳ Eliminando...' : '🗑️ Eliminar KPI'}
+          </button>
+        </div>
       </div>
     </div>
   );
