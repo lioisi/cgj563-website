@@ -20,6 +20,7 @@ export default function Header() {
           <a href="#servicios" className="nav-link">Servicios</a>
           <a href="#nosotros" className="nav-link">Nosotros</a>
           <a href="#contacto" className="nav-link">Contacto</a>
+          <a href="#dashboard" className="nav-link dashboard-btn">📊 Dashboard</a>
         </nav>
 
         <button 

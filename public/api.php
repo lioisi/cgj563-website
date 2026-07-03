@@ -33,6 +33,9 @@ try {
         case 'kpis':
             handleKPIs($conn, $method);
             break;
+        case 'kpi_registros':
+            handleKPIRegistros($conn, $method);
+            break;
         case 'procesos':
             handleProcesos($conn, $method);
             break;
@@ -49,6 +52,47 @@ try {
 }
 
 $conn->close();
+
+// ================================
+// FUNCIONES - KPI REGISTROS
+// ================================
+
+function handleKPIRegistros($conn, $method) {
+    if ($method === 'POST') {
+        createKPIRegistro($conn);
+    } else {
+        http_response_code(405);
+        echo json_encode(['error' => 'Method not allowed']);
+    }
+}
+
+function createKPIRegistro($conn) {
+    $data = json_decode(file_get_contents("php://input"), true);
+    
+    $kpi_id = intval($data['kpi_id'] ?? 0);
+    $valor_actual = floatval($data['valor_actual'] ?? 0);
+    $valor_meta = floatval($data['valor_meta'] ?? 0);
+    $periodo_mes = intval($data['periodo_mes'] ?? 1);
+    $periodo_año = intval($data['periodo_año'] ?? date('Y'));
+    $estado = $conn->real_escape_string($data['estado'] ?? 'On track');
+    $registrado_por = $conn->real_escape_string($data['registrado_por'] ?? 'Sistema');
+    
+    if (!$kpi_id) {
+        http_response_code(400);
+        echo json_encode(['error' => 'KPI ID requerido']);
+        return;
+    }
+    
+    $sql = "INSERT INTO kpi_registros (kpi_id, valor_actual, valor_meta, periodo_mes, periodo_año, estado, registrado_por)
+            VALUES ($kpi_id, $valor_actual, $valor_meta, $periodo_mes, $periodo_año, '$estado', '$registrado_por')";
+    
+    if ($conn->query($sql)) {
+        echo json_encode(['success' => true, 'id' => $conn->insert_id]);
+    } else {
+        http_response_code(400);
+        echo json_encode(['error' => $conn->error]);
+    }
+}
 
 // ================================
 // FUNCIONES - KPIs
