@@ -254,6 +254,25 @@ table tr:hover {
   background: #f8fafc;
 }
 
+.btn-delete-registro {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 3px;
+  transition: all 0.2s;
+}
+
+.btn-delete-registro:hover {
+  background: #fee2e2;
+  transform: scale(1.2);
+}
+
+.btn-delete-registro:active {
+  transform: scale(0.95);
+}
+
 .estado-on\ track {
   color: #16a34a;
   font-weight: 600;

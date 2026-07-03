@@ -106,6 +106,21 @@ function KPIDetail({ kpi, onClose }) {
     }
   };
 
+  const handleDeleteRecord = async (recordId) => {
+    if (!window.confirm('¿Eliminar este registro?')) {
+      return;
+    }
+
+    try {
+      await callAPI('kpi_registros', 'DELETE', recordId);
+      alert('✅ Registro eliminado');
+      // Recargar registros
+      window.location.reload();
+    } catch (err) {
+      alert('❌ Error: ' + err.message);
+    }
+  };
+
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={e => e.stopPropagation()}>
@@ -150,6 +165,7 @@ function KPIDetail({ kpi, onClose }) {
                   <th>Actual</th>
                   <th>Meta</th>
                   <th>Estado</th>
+                  <th>Acción</th>
                 </tr>
               </thead>
               <tbody>
@@ -159,6 +175,15 @@ function KPIDetail({ kpi, onClose }) {
                     <td>{reg.valor_actual}</td>
                     <td>{reg.valor_meta}</td>
                     <td className={`estado-${reg.estado.toLowerCase()}`}>{reg.estado}</td>
+                    <td>
+                      <button
+                        className="btn-delete-registro"
+                        onClick={() => handleDeleteRecord(reg.id)}
+                        title="Eliminar registro"
+                      >
+                        🗑️
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>

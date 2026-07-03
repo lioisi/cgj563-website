@@ -58,8 +58,12 @@ $conn->close();
 // ================================
 
 function handleKPIRegistros($conn, $method) {
+    $id = $_GET['id'] ?? null;
+    
     if ($method === 'POST') {
         createKPIRegistro($conn);
+    } elseif ($method === 'DELETE') {
+        deleteKPIRegistro($conn, $id);
     } else {
         http_response_code(405);
         echo json_encode(['error' => 'Method not allowed']);
@@ -88,6 +92,24 @@ function createKPIRegistro($conn) {
     
     if ($conn->query($sql)) {
         echo json_encode(['success' => true, 'id' => $conn->insert_id]);
+    } else {
+        http_response_code(400);
+        echo json_encode(['error' => $conn->error]);
+    }
+}
+
+function deleteKPIRegistro($conn, $id) {
+    if (!$id) {
+        http_response_code(400);
+        echo json_encode(['error' => 'ID requerido']);
+        return;
+    }
+    
+    $id = intval($id);
+    $sql = "DELETE FROM kpi_registros WHERE id = $id";
+    
+    if ($conn->query($sql)) {
+        echo json_encode(['success' => true]);
     } else {
         http_response_code(400);
         echo json_encode(['error' => $conn->error]);
