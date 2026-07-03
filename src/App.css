@@ -120,6 +120,22 @@ body {
   border-bottom: none;
 }
 
+.logout-btn {
+  background: #dc2626;
+  color: var(--white);
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  border: none;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.logout-btn:hover {
+  background: #b91c1c;
+  color: var(--white);
+}
+
 .menu-toggle {
   display: none;
   background: none;

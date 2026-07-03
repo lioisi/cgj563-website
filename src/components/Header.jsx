@@ -1,8 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import LogoSVG from './LogoSVG';
 
-export default function Header() {
+export default function Header({ onLogout }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [page, setPage] = useState('home');
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.slice(1) || 'home';
+      setPage(hash);
+    };
+
+    handleHashChange();
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
+  const handleLogoutClick = () => {
+    if (onLogout) onLogout();
+  };
 
   return (
     <header className="header">
@@ -21,6 +37,11 @@ export default function Header() {
           <a href="#nosotros" className="nav-link">Nosotros</a>
           <a href="#contacto" className="nav-link">Contacto</a>
           <a href="#dashboard" className="nav-link dashboard-btn">📊 Dashboard</a>
+          {page === 'dashboard' && onLogout && (
+            <button className="nav-link logout-btn" onClick={handleLogoutClick}>
+              🚪 Salir
+            </button>
+          )}
         </nav>
 
         <button 
