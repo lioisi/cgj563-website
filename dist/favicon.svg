@@ -1,0 +1,32 @@
+<svg width="32" height="32" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Círculo externo - El Self (Jung) -->
+  <circle cx="30" cy="30" r="28" stroke="#1e40af" strokeWidth="2" opacity="0.3"/>
+  
+  <!-- Círculo medio -->
+  <circle cx="30" cy="30" r="22" stroke="#1e40af" strokeWidth="1.5" opacity="0.5"/>
+  
+  <!-- Centro - Punto de integración -->
+  <circle cx="30" cy="30" r="4" fill="#1e40af"/>
+  
+  <!-- Cuatro cuadrantes - Integración de 4 elementos -->
+  <!-- Cuadrante superior -->
+  <line x1="30" y1="8" x2="30" y2="16" stroke="#0369a1" strokeWidth="2" strokeLinecap="round"/>
+  <!-- Cuadrante inferior -->
+  <line x1="30" y1="52" x2="30" y2="44" stroke="#0369a1" strokeWidth="2" strokeLinecap="round"/>
+  <!-- Cuadrante izquierdo -->
+  <line x1="8" y1="30" x2="16" y2="30" stroke="#0369a1" strokeWidth="2" strokeLinecap="round"/>
+  <!-- Cuadrante derecho -->
+  <line x1="52" y1="30" x2="44" y2="30" stroke="#0369a1" strokeWidth="2" strokeLinecap="round"/>
+  
+  <!-- Diagonales - Conectando procesos -->
+  <line x1="17" y1="17" x2="22" y2="22" stroke="#1e40af" strokeWidth="1.5" opacity="0.6" strokeLinecap="round"/>
+  <line x1="43" y1="17" x2="38" y2="22" stroke="#1e40af" strokeWidth="1.5" opacity="0.6" strokeLinecap="round"/>
+  <line x1="17" y1="43" x2="22" y2="38" stroke="#1e40af" strokeWidth="1.5" opacity="0.6" strokeLinecap="round"/>
+  <line x1="43" y1="43" x2="38" y2="38" stroke="#1e40af" strokeWidth="1.5" opacity="0.6" strokeLinecap="round"/>
+  
+  <!-- Puntos en los cuadrantes - Nodos de información -->
+  <circle cx="30" cy="12" r="2" fill="#0369a1"/>
+  <circle cx="30" cy="48" r="2" fill="#0369a1"/>
+  <circle cx="12" cy="30" r="2" fill="#0369a1"/>
+  <circle cx="48" cy="30" r="2" fill="#0369a1"/>
+</svg>
