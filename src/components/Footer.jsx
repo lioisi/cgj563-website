@@ -26,7 +26,7 @@ export default function Footer() {
         </div>
       </div>
       <div className="footer-bottom">
-        <p>&copy; 2024 CGJ563 S.A. Todos los derechos reservados.</p>
+        <p>&copy; 2024-2026 CGJ563 S.A. Todos los derechos reservados. • Última actualización: Julio 2026</p>
       </div>
     </footer>
   );

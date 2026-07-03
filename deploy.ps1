@@ -1,15 +1,15 @@
 # Deploy script for CGJ563 website to Ferozo
 # Usage: .\deploy.ps1
 
-Write-Host "🔨 Building project..." -ForegroundColor Cyan
+Write-Host "[BUILD] Compiling project..." -ForegroundColor Cyan
 npm run build
 
 if ($LASTEXITCODE -ne 0) {
-    Write-Host "❌ Build failed!" -ForegroundColor Red
+    Write-Host "[ERROR] Build failed!" -ForegroundColor Red
     exit 1
 }
 
-Write-Host "`n✅ Build successful!`n" -ForegroundColor Green
+Write-Host "`n[OK] Build successful!`n" -ForegroundColor Green
 
 # FTP Configuration
 $FTPServer = "a0150879.ferozo.com"
@@ -18,7 +18,7 @@ $Pass = "Mohabon563Pagina*"
 $LocalPath = "$PSScriptRoot\dist"
 $FTPPath = "/public_html/"
 
-Write-Host "📤 Uploading to Ferozo..." -ForegroundColor Cyan
+Write-Host "[UPLOAD] Starting FTP upload..." -ForegroundColor Cyan
 
 function Upload-FileToFTP {
     param(
@@ -45,7 +45,7 @@ function Upload-FileToFTP {
         return $true
     }
     catch {
-        Write-Host "❌ Error uploading $([System.IO.Path]::GetFileName($LocalFile)): $_" -ForegroundColor Red
+        Write-Host "[ERROR] Failed to upload $([System.IO.Path]::GetFileName($LocalFile)): $_" -ForegroundColor Red
         return $false
     }
 }
@@ -79,11 +79,11 @@ foreach ($File in $Files) {
 }
 
 # Push changes to GitHub
-Write-Host "`n📚 Pushing to GitHub..." -ForegroundColor Cyan
+Write-Host "`n[GITHUB] Pushing to GitHub..." -ForegroundColor Cyan
 git add -A
 git commit -m "Deploy: $(Get-Date -Format 'yyyy-MM-dd HH:mm')" 2>$null
 git push origin main 2>$null
 
-Write-Host "`n✅ Deployment complete!" -ForegroundColor Green
-Write-Host "📊 Uploaded: $uploadedCount files`n" -ForegroundColor Green
-Write-Host "📍 Live at: https://cgj563.com" -ForegroundColor Cyan
+Write-Host "`n[SUCCESS] Deployment complete!" -ForegroundColor Green
+Write-Host "[STATS] Uploaded: $uploadedCount files`n" -ForegroundColor Green
+Write-Host "[LIVE] https://cgj563.com" -ForegroundColor Cyan
