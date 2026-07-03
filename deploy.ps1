@@ -1,4 +1,5 @@
-# Deploy script for CGJ563 website to Ferozo
+# Deploy script for CGJ563 website
+# Compiles and pushes to GitHub (upload to Ferozo manually via web manager)
 # Usage: .\deploy.ps1
 
 Write-Host "[BUILD] Compiling project..." -ForegroundColor Cyan
@@ -11,79 +12,17 @@ if ($LASTEXITCODE -ne 0) {
 
 Write-Host "`n[OK] Build successful!`n" -ForegroundColor Green
 
-# FTP Configuration
-$FTPServer = "a0150879.ferozo.com"
-$User = "a0150879"
-$Pass = "Mohabon563Pagina*"
-$LocalPath = "$PSScriptRoot\dist"
-$FTPPath = "/public_html/"
-
-Write-Host "[UPLOAD] Starting FTP upload..." -ForegroundColor Cyan
-
-function Upload-FileToFTP {
-    param(
-        [string]$LocalFile,
-        [string]$FTPFilePath
-    )
-    
-    try {
-        $FTPRequest = [System.Net.FtpWebRequest]::Create("ftp://$FTPServer$FTPFilePath")
-        $FTPRequest.Credentials = New-Object System.Net.NetworkCredential($User, $Pass)
-        $FTPRequest.Method = [System.Net.WebRequestMethods+Ftp]::UploadFile
-        $FTPRequest.UseBinary = $true
-        $FTPRequest.KeepAlive = $true
-        
-        $FileStream = [System.IO.File]::OpenRead($LocalFile)
-        $FTPRequest.ContentLength = $FileStream.Length
-        
-        $RequestStream = $FTPRequest.GetRequestStream()
-        $FileStream.CopyTo($RequestStream)
-        $RequestStream.Close()
-        
-        $Response = $FTPRequest.GetResponse()
-        $Response.Close()
-        return $true
-    }
-    catch {
-        Write-Host "[ERROR] Failed to upload $([System.IO.Path]::GetFileName($LocalFile)): $_" -ForegroundColor Red
-        return $false
-    }
-}
-
-# Create directories first
-$Dirs = Get-ChildItem -Path $LocalPath -Recurse -Directory
-foreach ($Dir in $Dirs) {
-    $RelPath = $Dir.FullName.Substring($LocalPath.Length).Replace("\", "/")
-    $FTPDir = "ftp://$FTPServer$FTPPath$RelPath"
-    try {
-        $mkdirReq = [System.Net.FtpWebRequest]::Create($FTPDir)
-        $mkdirReq.Credentials = New-Object System.Net.NetworkCredential($User, $Pass)
-        $mkdirReq.Method = [System.Net.WebRequestMethods+Ftp]::MakeDirectory
-        $mkdirReq.GetResponse().Close()
-    }
-    catch {
-        # Directory may already exist
-    }
-}
-
-# Upload all files
-$Files = Get-ChildItem -Path $LocalPath -Recurse -File
-$uploadedCount = 0
-foreach ($File in $Files) {
-    $RelPath = $File.FullName.Substring($LocalPath.Length).Replace("\", "/")
-    $FTPFilePath = "$FTPPath$RelPath"
-    
-    if (Upload-FileToFTP -LocalFile $File.FullName -FTPFilePath $FTPFilePath) {
-        $uploadedCount++
-    }
-}
-
 # Push changes to GitHub
-Write-Host "`n[GITHUB] Pushing to GitHub..." -ForegroundColor Cyan
+Write-Host "[GITHUB] Pushing to GitHub..." -ForegroundColor Cyan
 git add -A
-git commit -m "Deploy: $(Get-Date -Format 'yyyy-MM-dd HH:mm')" 2>$null
+git commit -m "Update: $(Get-Date -Format 'yyyy-MM-dd HH:mm')" 2>$null
 git push origin main 2>$null
 
-Write-Host "`n[SUCCESS] Deployment complete!" -ForegroundColor Green
-Write-Host "[STATS] Uploaded: $uploadedCount files`n" -ForegroundColor Green
-Write-Host "[LIVE] https://cgj563.com" -ForegroundColor Cyan
+Write-Host "`n[SUCCESS] Deployment to GitHub complete!" -ForegroundColor Green
+
+Write-Host "`nINSTRUCCIONES PARA FEROZO:" -ForegroundColor Yellow
+Write-Host "1. Abre: https://miembro.ferozo.com"
+Write-Host "2. Login con a0150879 / Mohabon563Pagina*"
+Write-Host "3. Gestor de Archivos > public_html"
+Write-Host "4. Sube carpeta: dist/"
+Write-Host "`nArchivos listos en: C:\CGJAPP\logia-admin\dist" -ForegroundColor Cyan
