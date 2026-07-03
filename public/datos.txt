@@ -1,0 +1,10 @@
+
+https://yfekyopdasspcyviutio.supabase.co
+sb_publishable_7mmjP732sEyY21TqMJS_mw_fXp8_7wy
+
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlmZWt5b3BkYXNzcGN5dml1dGlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQyODU1NjYsImV4cCI6MjA4OTg2MTU2Nn0.E76EuZyfibVTUUKQoMEknJ5BjC95bLO9bVAO1wGvpkc
+
+lsJxxa58a0GyGExB
+
+
+postgresql://postgres:[YOUR-PASSWORD]@db.yfekyopdasspcyviutio.supabase.co:5432/postgres
