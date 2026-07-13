@@ -1,12 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import Header from './components/Header';
-import Hero from './components/Hero';
-import ValueProposition from './components/ValueProposition';
-import Services from './components/Services';
-import About from './components/About';
-import Contact from './components/Contact';
-import Footer from './components/Footer';
+import ConsultingSite from './components/ConsultingSite';
 import Dashboard from './components/Dashboard';
 import Login from './components/Login';
 
@@ -49,26 +43,19 @@ function App() {
     }
 
     return (
-      <div className="app">
-        <Header onLogout={handleLogout} />
+      <div className="dashboard-shell">
+        <div className="dashboard-shell-header">
+          <a href="#home" className="dashboard-shell-link">Volver al sitio</a>
+          <button className="dashboard-shell-logout" onClick={handleLogout}>
+            Cerrar sesión
+          </button>
+        </div>
         <Dashboard />
-        <Footer />
       </div>
     );
   }
 
-  // Página principal
-  return (
-    <div className="app">
-      <Header />
-      <Hero />
-      <ValueProposition />
-      <Services />
-      <About />
-      <Contact />
-      <Footer />
-    </div>
-  );
+  return <ConsultingSite />;
 }
 
 export default App;

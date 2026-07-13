@@ -1,5 +1,28 @@
 import { useState, useEffect } from 'react';
 
+function parseApiJson(rawText) {
+  const cleanText = rawText.trim();
+
+  if (!cleanText) {
+    throw new Error('La API devolvio una respuesta vacia.');
+  }
+
+  try {
+    return JSON.parse(cleanText);
+  } catch {
+    // Algunas respuestas de PHP incluyen warnings/HTML al inicio o final.
+    const firstBrace = cleanText.indexOf('{');
+    const lastBrace = cleanText.lastIndexOf('}');
+
+    if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+      const jsonSlice = cleanText.slice(firstBrace, lastBrace + 1);
+      return JSON.parse(jsonSlice);
+    }
+
+    throw new Error('La API devolvio JSON invalido.');
+  }
+}
+
 // Hook para consumir APIs
 export function useAPI(action, id = null) {
   const [data, setData] = useState(null);
@@ -14,8 +37,9 @@ export function useAPI(action, id = null) {
         
         const response = await fetch(url);
         if (!response.ok) throw new Error('API Error');
-        
-        const result = await response.json();
+
+        const rawText = await response.text();
+        const result = parseApiJson(rawText);
         setData(result.data);
       } catch (err) {
         setError(err.message);
@@ -44,7 +68,8 @@ export async function callAPI(action, method, id = null, payload = null) {
     if (payload) options.body = JSON.stringify(payload);
 
     const response = await fetch(url, options);
-    const result = await response.json();
+    const rawText = await response.text();
+    const result = parseApiJson(rawText);
 
     if (!response.ok) throw new Error(result.error || 'API Error');
 

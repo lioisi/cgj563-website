@@ -144,6 +144,89 @@ $sql_commands = array(
         cambios_nuevos JSON,
         timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+    )",
+
+    // 9. TABLA DE PROBLEMAS
+    "CREATE TABLE IF NOT EXISTS problemas (
+        id INT PRIMARY KEY AUTO_INCREMENT,
+        numero INT,
+        problema VARCHAR(255) NOT NULL,
+        proceso_afectado VARCHAR(150),
+        impacto INT CHECK (impacto >= 1 AND impacto <= 5),
+        frecuencia INT CHECK (frecuencia >= 1 AND frecuencia <= 5),
+        riesgo INT CHECK (riesgo >= 1 AND riesgo <= 5),
+        esfuerzo_solucion INT CHECK (esfuerzo_solucion >= 1 AND esfuerzo_solucion <= 5),
+        prioridad_calculada DECIMAL(5, 2),
+        responsable VARCHAR(100),
+        accion_recomendada TEXT,
+        estado ENUM('Abierto', 'En análisis', 'Resuelto', 'Pospuesto'),
+        creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        actualizado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    )",
+
+    // 10. TABLA DE INTEGRACIONES (mapa completo)
+    "CREATE TABLE IF NOT EXISTS integraciones (
+        id INT PRIMARY KEY AUTO_INCREMENT,
+        sistema_origen VARCHAR(150) NOT NULL,
+        sistema_destino VARCHAR(150) NOT NULL,
+        dato_evento TEXT,
+        existe_integracion VARCHAR(100),
+        tipo_actual VARCHAR(100),
+        tipo_propuesto VARCHAR(100),
+        frecuencia VARCHAR(100),
+        criticidad ENUM('Baja', 'Media', 'Alta', 'Crítica'),
+        observaciones TEXT,
+        estado ENUM('Planificada', 'En desarrollo', 'Activa', 'Pausada'),
+        creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        actualizado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    )",
+
+    // 11. TABLA DE MADUREZ DIGITAL
+    "CREATE TABLE IF NOT EXISTS madurez_digital (
+        id INT PRIMARY KEY AUTO_INCREMENT,
+        dimension VARCHAR(100) NOT NULL UNIQUE,
+        descripcion TEXT,
+        puntaje_actual INT CHECK (puntaje_actual >= 1 AND puntaje_actual <= 5),
+        puntaje_objetivo INT CHECK (puntaje_objetivo >= 1 AND puntaje_objetivo <= 5),
+        brecha INT,
+        evidencia TEXT,
+        accion_recomendada TEXT,
+        creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        actualizado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    )",
+
+    // 12. TABLA DE BACKLOG FUNCIONAL
+    "CREATE TABLE IF NOT EXISTS backlog_funcional (
+        id INT PRIMARY KEY AUTO_INCREMENT,
+        epica VARCHAR(100) NOT NULL,
+        modulo VARCHAR(100),
+        funcionalidad VARCHAR(255) NOT NULL,
+        descripcion TEXT,
+        prioridad ENUM('Baja', 'Media', 'Alta', 'Crítica'),
+        complejidad ENUM('Baja', 'Media', 'Alta', 'Muy Alta'),
+        beneficio_esperado TEXT,
+        dependencias TEXT,
+        estado ENUM('Por hacer', 'En desarrollo', 'En revisión', 'Completado', 'Pospuesto'),
+        creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        actualizado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    )",
+
+    // 13. TABLA DE ROADMAP
+    "CREATE TABLE IF NOT EXISTS roadmap (
+        id INT PRIMARY KEY AUTO_INCREMENT,
+        fase VARCHAR(50) NOT NULL UNIQUE,
+        iniciativa VARCHAR(255) NOT NULL,
+        duracion_estimada VARCHAR(100),
+        objetivo TEXT,
+        entregable TEXT,
+        impacto VARCHAR(50),
+        complejidad ENUM('Baja', 'Media', 'Alta', 'Muy Alta'),
+        prioridad ENUM('Baja', 'Media', 'Alta', 'Crítica'),
+        estado ENUM('No iniciado', 'En progreso', 'Completado', 'Pausado'),
+        fecha_inicio DATE,
+        fecha_fin_estimada DATE,
+        creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        actualizado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     )"
 );
 
@@ -211,6 +294,78 @@ foreach ($sistemas as $sistema) {
 }
 
 echo "<p>✅ Sistemas insertados: " . count($sistemas) . "</p>";
+
+// Insertar problemas
+$problemas = array(
+    array(1, 'Información dispersa para KPIs', 'Extracción de indicadores', 5, 5, 4, 3, 33.33),
+    array(2, 'Carga manual de novedades', 'Liquidación / novedades', 5, 4, 4, 3, 26.67),
+    array(3, 'Asignación de recursos poco trazable', 'Operaciones', 4, 4, 4, 3, 21.33),
+    array(4, 'Baja adopción por parte de recursos', 'App móvil', 4, 3, 3, 2, 18),
+    array(5, 'Integraciones inexistentes o manuales', 'Sistemas', 5, 4, 5, 4, 25)
+);
+
+foreach ($problemas as $prob) {
+    $sql = "INSERT IGNORE INTO problemas (numero, problema, proceso_afectado, impacto, frecuencia, riesgo, esfuerzo_solucion, prioridad_calculada, estado) 
+            VALUES ({$prob[0]}, '{$prob[1]}', '{$prob[2]}', {$prob[3]}, {$prob[4]}, {$prob[5]}, {$prob[6]}, {$prob[7]}, 'Abierto')";
+    $conn->query($sql);
+}
+
+echo "<p>✅ Problemas insertados: " . count($problemas) . "</p>";
+
+// Insertar madurez digital
+$madurez = array(
+    array('Procesos', 'Nivel de formalización y estandarización', 2, 4),
+    array('Integración', 'Nivel de conexión entre sistemas', 1, 4),
+    array('Datos', 'Calidad, disponibilidad y consistencia de datos', 2, 4),
+    array('Movilidad', 'Uso de celular por recursos operativos', 1, 4),
+    array('BI / KPIs', 'Capacidad de obtener indicadores confiables', 2, 5),
+    array('Automatización', 'Procesos con reglas automáticas', 1, 4)
+);
+
+foreach ($madurez as $m) {
+    $sql = "INSERT IGNORE INTO madurez_digital (dimension, descripcion, puntaje_actual, puntaje_objetivo) 
+            VALUES ('{$m[0]}', '{$m[1]}', {$m[2]}, {$m[3]})";
+    $conn->query($sql);
+}
+
+echo "<p>✅ Madurez Digital insertada: " . count($madurez) . "</p>";
+
+// Insertar backlog funcional
+$backlog = array(
+    array('App móvil', 'Login seguro', 'Ingreso del recurso a la app con credenciales propias', 'Alta', 'Media'),
+    array('App móvil', 'Mis asignaciones', 'Visualización de objetivos, horarios y estado', 'Alta', 'Media'),
+    array('App móvil', 'Postulación a servicios', 'Recursos se postulan a objetivos disponibles', 'Alta', 'Alta'),
+    array('App móvil', 'Carga de novedades', 'Carga de horas, ausencias, reemplazos e incidentes', 'Alta', 'Alta'),
+    array('Operaciones', 'Asignación de recursos', 'Administrar cobertura de objetivos desde plataforma', 'Alta', 'Alta'),
+    array('Operaciones', 'Aprobación de novedades', 'Validación antes de enviar a liquidación', 'Alta', 'Media'),
+    array('BI', 'Dashboard KPIs', 'Indicadores de cobertura, presentismo, horas, costos', 'Alta', 'Alta'),
+    array('Integración', 'Conector liquidación', 'Envío de novedades validadas al sistema de haberes', 'Alta', 'Alta')
+);
+
+foreach ($backlog as $item) {
+    $sql = "INSERT IGNORE INTO backlog_funcional (epica, funcionalidad, descripcion, prioridad, complejidad, estado) 
+            VALUES ('{$item[0]}', '{$item[1]}', '{$item[2]}', '{$item[3]}', '{$item[4]}', 'Por hacer')";
+    $conn->query($sql);
+}
+
+echo "<p>✅ Backlog Funcional insertado: " . count($backlog) . "</p>";
+
+// Insertar roadmap
+$roadmap = array(
+    array('Fase 1', 'Diagnóstico y diseño conceptual', '4 a 6 semanas', 'Informe ejecutivo + roadmap'),
+    array('Fase 2', 'Dashboard inicial de KPIs', '6 a 8 semanas', 'Tablero ejecutivo MVP'),
+    array('Fase 3', 'App móvil MVP', '8 a 12 semanas', 'Aplicación móvil operativa'),
+    array('Fase 4', 'Integración con liquidación', '8 a 12 semanas', 'Conector / archivo validado'),
+    array('Fase 5', 'Automatización avanzada', '12+ semanas', 'Motor de reglas y alertas')
+);
+
+foreach ($roadmap as $rw) {
+    $sql = "INSERT IGNORE INTO roadmap (fase, iniciativa, duracion_estimada, entregable, estado) 
+            VALUES ('{$rw[0]}', '{$rw[1]}', '{$rw[2]}', '{$rw[3]}', 'No iniciado')";
+    $conn->query($sql);
+}
+
+echo "<p>✅ Roadmap insertado: " . count($roadmap) . "</p>";
 
 echo "<hr>";
 echo "<h2>✅ Base de Datos Lista!</h2>";

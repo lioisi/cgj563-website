@@ -1,11 +1,18 @@
 import { useState } from 'react';
 import { useAPI, callAPI } from '../hooks/useAPI';
+import ProblemasList from './ProblemasList';
+import IntegracionesList from './IntegracionesList';
+import MadurezDigital from './MadurezDigital';
+import BacklogFuncional from './BacklogFuncional';
+import Roadmap from './Roadmap';
+import InternalApps from './InternalApps';
 import './Dashboard.css';
 
 export default function Dashboard() {
   const { data: kpis, loading, error } = useAPI('kpis');
   const [selectedKPI, setSelectedKPI] = useState(null);
   const [showForm, setShowForm] = useState(false);
+  const [activeTab, setActiveTab] = useState('kpis');
 
   if (loading) return <div className="dashboard-loading">Cargando KPIs...</div>;
   if (error) return <div className="dashboard-error">Error: {error}</div>;
@@ -13,28 +20,100 @@ export default function Dashboard() {
   return (
     <div className="dashboard">
       <div className="dashboard-header">
-        <h1>📊 Dashboard de KPIs</h1>
-        <button className="btn-primary" onClick={() => setShowForm(true)}>
-          + Agregar KPI
+        <h1>📊 Dashboard Integral</h1>
+      </div>
+
+      <div className="dashboard-tabs">
+        <button 
+          className={`tab-button ${activeTab === 'kpis' ? 'active' : ''}`}
+          onClick={() => setActiveTab('kpis')}
+        >
+          KPIs
+        </button>
+        <button 
+          className={`tab-button ${activeTab === 'problemas' ? 'active' : ''}`}
+          onClick={() => setActiveTab('problemas')}
+        >
+          Problemas
+        </button>
+        <button 
+          className={`tab-button ${activeTab === 'integraciones' ? 'active' : ''}`}
+          onClick={() => setActiveTab('integraciones')}
+        >
+          Integraciones
+        </button>
+        <button 
+          className={`tab-button ${activeTab === 'madurez' ? 'active' : ''}`}
+          onClick={() => setActiveTab('madurez')}
+        >
+          Madurez Digital
+        </button>
+        <button 
+          className={`tab-button ${activeTab === 'backlog' ? 'active' : ''}`}
+          onClick={() => setActiveTab('backlog')}
+        >
+          Backlog
+        </button>
+        <button 
+          className={`tab-button ${activeTab === 'roadmap' ? 'active' : ''}`}
+          onClick={() => setActiveTab('roadmap')}
+        >
+          Roadmap
+        </button>
+        <button
+          className={`tab-button ${activeTab === 'apps' ? 'active' : ''}`}
+          onClick={() => setActiveTab('apps')}
+        >
+          Apps internas
         </button>
       </div>
 
-      {showForm && (
-        <KPIForm onClose={() => setShowForm(false)} />
-      )}
+      <div className="tab-content">
+        {activeTab === 'kpis' && (
+          <>
+            <div className="section-header">
+              <h2>KPIs - Indicadores Clave</h2>
+              <div className="section-actions">
+                <a
+                  className="btn-secondary"
+                  href="/GUIA_KPIS_1_PAGINA.md"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Ver guía rápida KPIs
+                </a>
+                <button className="btn-primary" onClick={() => setShowForm(true)}>
+                  + Agregar KPI
+                </button>
+              </div>
+            </div>
+            
+            {showForm && (
+              <KPIForm onClose={() => setShowForm(false)} />
+            )}
 
-      {selectedKPI && (
-        <KPIDetail kpi={selectedKPI} onClose={() => setSelectedKPI(null)} />
-      )}
+            {selectedKPI && (
+              <KPIDetail kpi={selectedKPI} onClose={() => setSelectedKPI(null)} />
+            )}
 
-      <div className="kpi-grid">
-        {kpis && kpis.map(kpi => (
-          <KPICard
-            key={kpi.id}
-            kpi={kpi}
-            onClick={() => setSelectedKPI(kpi)}
-          />
-        ))}
+            <div className="kpi-grid">
+              {kpis && kpis.map(kpi => (
+                <KPICard
+                  key={kpi.id}
+                  kpi={kpi}
+                  onClick={() => setSelectedKPI(kpi)}
+                />
+              ))}
+            </div>
+          </>
+        )}
+
+        {activeTab === 'problemas' && <ProblemasList />}
+        {activeTab === 'integraciones' && <IntegracionesList />}
+        {activeTab === 'madurez' && <MadurezDigital />}
+        {activeTab === 'backlog' && <BacklogFuncional />}
+        {activeTab === 'roadmap' && <Roadmap />}
+        {activeTab === 'apps' && <InternalApps />}
       </div>
     </div>
   );

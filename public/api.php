@@ -42,6 +42,27 @@ try {
         case 'sistemas':
             handleSistemas($conn, $method);
             break;
+        case 'problemas':
+            handleProblemas($conn, $method);
+            break;
+        case 'integraciones':
+            handleIntegraciones($conn, $method);
+            break;
+        case 'madurez':
+            handleMadurez($conn, $method);
+            break;
+        case 'backlog':
+            handleBacklog($conn, $method);
+            break;
+        case 'roadmap':
+            handleRoadmap($conn, $method);
+            break;
+        case 'internal_users':
+            handleInternalUsers($conn, $method);
+            break;
+        case 'gastos_personales':
+            handleGastosPersonales($conn, $method);
+            break;
         default:
             http_response_code(404);
             echo json_encode(['error' => 'Endpoint not found']);
@@ -516,4 +537,402 @@ function deleteSistema($conn, $id) {
     }
 }
 
-?>
+// ================================
+// FUNCIONES - PROBLEMAS
+// ================================
+
+function handleProblemas($conn, $method) {
+    if ($method === 'GET') {
+        getAllProblemas($conn);
+    }
+}
+
+function getAllProblemas($conn) {
+    $sql = "SELECT * FROM problemas ORDER BY prioridad_calculada DESC";
+    $result = $conn->query($sql);
+    $data = [];
+    while ($row = $result->fetch_assoc()) {
+        $data[] = $row;
+    }
+    echo json_encode(['data' => $data, 'total' => count($data)]);
+}
+
+// ================================
+// FUNCIONES - INTEGRACIONES
+// ================================
+
+function handleIntegraciones($conn, $method) {
+    if ($method === 'GET') {
+        getAllIntegraciones($conn);
+    }
+}
+
+function getAllIntegraciones($conn) {
+    $sql = "SELECT * FROM integraciones ORDER BY criticidad DESC, sistema_origen";
+    $result = $conn->query($sql);
+    $data = [];
+    while ($row = $result->fetch_assoc()) {
+        $data[] = $row;
+    }
+    echo json_encode(['data' => $data, 'total' => count($data)]);
+}
+
+// ================================
+// FUNCIONES - MADUREZ DIGITAL
+// ================================
+
+function handleMadurez($conn, $method) {
+    if ($method === 'GET') {
+        getAllMadurez($conn);
+    }
+}
+
+function getAllMadurez($conn) {
+    $sql = "SELECT * FROM madurez_digital ORDER BY dimension";
+    $result = $conn->query($sql);
+    $data = [];
+    while ($row = $result->fetch_assoc()) {
+        $data[] = $row;
+    }
+    echo json_encode(['data' => $data, 'total' => count($data)]);
+}
+
+// ================================
+// FUNCIONES - BACKLOG FUNCIONAL
+// ================================
+
+function handleBacklog($conn, $method) {
+    if ($method === 'GET') {
+        getAllBacklog($conn);
+    }
+}
+
+function getAllBacklog($conn) {
+    $sql = "SELECT * FROM backlog_funcional ORDER BY prioridad DESC, epica";
+    $result = $conn->query($sql);
+    $data = [];
+    while ($row = $result->fetch_assoc()) {
+        $data[] = $row;
+    }
+    echo json_encode(['data' => $data, 'total' => count($data)]);
+}
+
+// ================================
+// FUNCIONES - ROADMAP
+// ================================
+
+function handleRoadmap($conn, $method) {
+    if ($method === 'GET') {
+        getAllRoadmap($conn);
+    }
+}
+
+function getAllRoadmap($conn) {
+    $sql = "SELECT * FROM roadmap ORDER BY SUBSTR(fase, 6) ASC";
+    $result = $conn->query($sql);
+    $data = [];
+    while ($row = $result->fetch_assoc()) {
+        $data[] = $row;
+    }
+    echo json_encode(['data' => $data, 'total' => count($data)]);
+}
+
+// ================================
+// FUNCIONES - APPS INTERNAS
+// ================================
+
+function ensureInternalAppsTables($conn) {
+    $sqlUsers = "CREATE TABLE IF NOT EXISTS internal_users (
+        id INT PRIMARY KEY AUTO_INCREMENT,
+        nombre VARCHAR(120) NOT NULL,
+        email VARCHAR(150) NOT NULL UNIQUE,
+        rol ENUM('admin', 'usuario') DEFAULT 'usuario',
+        activo TINYINT(1) DEFAULT 1,
+        creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        actualizado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    )";
+
+    $sqlExpenses = "CREATE TABLE IF NOT EXISTS personal_expenses (
+        id INT PRIMARY KEY AUTO_INCREMENT,
+        user_id INT NOT NULL,
+        fecha DATE NOT NULL,
+        concepto VARCHAR(200) NOT NULL,
+        categoria VARCHAR(80) NOT NULL,
+        monto DECIMAL(12,2) NOT NULL,
+        metodo_pago VARCHAR(80),
+        notas TEXT,
+        creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        actualizado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES internal_users(id) ON DELETE CASCADE
+    )";
+
+    $conn->query($sqlUsers);
+    $conn->query($sqlExpenses);
+}
+
+function handleInternalUsers($conn, $method) {
+    ensureInternalAppsTables($conn);
+    $id = $_GET['id'] ?? null;
+
+    if ($method === 'GET') {
+        if ($id) {
+            getInternalUserById($conn, $id);
+        } else {
+            getAllInternalUsers($conn);
+        }
+    } elseif ($method === 'POST') {
+        createInternalUser($conn);
+    } elseif ($method === 'PUT') {
+        updateInternalUser($conn, $id);
+    } elseif ($method === 'DELETE') {
+        deleteInternalUser($conn, $id);
+    } else {
+        http_response_code(405);
+        echo json_encode(['error' => 'Method not allowed']);
+    }
+}
+
+function getAllInternalUsers($conn) {
+    $sql = "SELECT * FROM internal_users ORDER BY activo DESC, nombre ASC";
+    $result = $conn->query($sql);
+    $data = [];
+
+    while ($row = $result->fetch_assoc()) {
+        $data[] = $row;
+    }
+
+    echo json_encode(['data' => $data, 'total' => count($data)]);
+}
+
+function getInternalUserById($conn, $id) {
+    $id = intval($id);
+    $sql = "SELECT * FROM internal_users WHERE id = $id LIMIT 1";
+    $result = $conn->query($sql);
+
+    if (!$result || $result->num_rows === 0) {
+        http_response_code(404);
+        echo json_encode(['error' => 'Usuario no encontrado']);
+        return;
+    }
+
+    echo json_encode(['data' => $result->fetch_assoc()]);
+}
+
+function createInternalUser($conn) {
+    $data = json_decode(file_get_contents('php://input'), true);
+
+    $nombre = $conn->real_escape_string($data['nombre'] ?? '');
+    $email = $conn->real_escape_string($data['email'] ?? '');
+    $rol = $conn->real_escape_string($data['rol'] ?? 'usuario');
+
+    if (!$nombre || !$email) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Nombre y email son requeridos']);
+        return;
+    }
+
+    $sql = "INSERT INTO internal_users (nombre, email, rol, activo)
+            VALUES ('$nombre', '$email', '$rol', 1)";
+
+    if ($conn->query($sql)) {
+        echo json_encode(['success' => true, 'id' => $conn->insert_id]);
+    } else {
+        http_response_code(400);
+        echo json_encode(['error' => $conn->error]);
+    }
+}
+
+function updateInternalUser($conn, $id) {
+    if (!$id) {
+        http_response_code(400);
+        echo json_encode(['error' => 'ID requerido']);
+        return;
+    }
+
+    $id = intval($id);
+    $data = json_decode(file_get_contents('php://input'), true);
+
+    $updates = [];
+    if (isset($data['nombre'])) $updates[] = "nombre = '" . $conn->real_escape_string($data['nombre']) . "'";
+    if (isset($data['email'])) $updates[] = "email = '" . $conn->real_escape_string($data['email']) . "'";
+    if (isset($data['rol'])) $updates[] = "rol = '" . $conn->real_escape_string($data['rol']) . "'";
+    if (isset($data['activo'])) $updates[] = "activo = " . (intval($data['activo']) ? 1 : 0);
+
+    if (empty($updates)) {
+        http_response_code(400);
+        echo json_encode(['error' => 'No fields to update']);
+        return;
+    }
+
+    $sql = "UPDATE internal_users SET " . implode(', ', $updates) . " WHERE id = $id";
+
+    if ($conn->query($sql)) {
+        echo json_encode(['success' => true]);
+    } else {
+        http_response_code(400);
+        echo json_encode(['error' => $conn->error]);
+    }
+}
+
+function deleteInternalUser($conn, $id) {
+    if (!$id) {
+        http_response_code(400);
+        echo json_encode(['error' => 'ID requerido']);
+        return;
+    }
+
+    $id = intval($id);
+    $sql = "DELETE FROM internal_users WHERE id = $id";
+
+    if ($conn->query($sql)) {
+        echo json_encode(['success' => true]);
+    } else {
+        http_response_code(400);
+        echo json_encode(['error' => $conn->error]);
+    }
+}
+
+function handleGastosPersonales($conn, $method) {
+    ensureInternalAppsTables($conn);
+    $id = $_GET['id'] ?? null;
+    $userId = $_GET['user_id'] ?? null;
+
+    if ($method === 'GET') {
+        if ($id) {
+            getGastoPersonalById($conn, $id);
+        } else {
+            getAllGastosPersonales($conn, $userId);
+        }
+    } elseif ($method === 'POST') {
+        createGastoPersonal($conn);
+    } elseif ($method === 'PUT') {
+        updateGastoPersonal($conn, $id);
+    } elseif ($method === 'DELETE') {
+        deleteGastoPersonal($conn, $id);
+    } else {
+        http_response_code(405);
+        echo json_encode(['error' => 'Method not allowed']);
+    }
+}
+
+function getAllGastosPersonales($conn, $userId = null) {
+    $where = '';
+    if ($userId) {
+        $where = 'WHERE e.user_id = ' . intval($userId);
+    }
+
+    $sql = "SELECT e.*, u.nombre AS usuario_nombre
+            FROM personal_expenses e
+            INNER JOIN internal_users u ON u.id = e.user_id
+            $where
+            ORDER BY e.fecha DESC, e.id DESC";
+
+    $result = $conn->query($sql);
+    $data = [];
+
+    while ($row = $result->fetch_assoc()) {
+        $data[] = $row;
+    }
+
+    echo json_encode(['data' => $data, 'total' => count($data)]);
+}
+
+function getGastoPersonalById($conn, $id) {
+    $id = intval($id);
+    $sql = "SELECT e.*, u.nombre AS usuario_nombre
+            FROM personal_expenses e
+            INNER JOIN internal_users u ON u.id = e.user_id
+            WHERE e.id = $id
+            LIMIT 1";
+
+    $result = $conn->query($sql);
+    if (!$result || $result->num_rows === 0) {
+        http_response_code(404);
+        echo json_encode(['error' => 'Gasto no encontrado']);
+        return;
+    }
+
+    echo json_encode(['data' => $result->fetch_assoc()]);
+}
+
+function createGastoPersonal($conn) {
+    $data = json_decode(file_get_contents('php://input'), true);
+
+    $userId = intval($data['user_id'] ?? 0);
+    $fecha = $conn->real_escape_string($data['fecha'] ?? '');
+    $concepto = $conn->real_escape_string($data['concepto'] ?? '');
+    $categoria = $conn->real_escape_string($data['categoria'] ?? 'General');
+    $monto = floatval($data['monto'] ?? 0);
+    $metodoPago = $conn->real_escape_string($data['metodo_pago'] ?? '');
+    $notas = $conn->real_escape_string($data['notas'] ?? '');
+
+    if (!$userId || !$fecha || !$concepto || $monto <= 0) {
+        http_response_code(400);
+        echo json_encode(['error' => 'user_id, fecha, concepto y monto son requeridos']);
+        return;
+    }
+
+    $sql = "INSERT INTO personal_expenses (user_id, fecha, concepto, categoria, monto, metodo_pago, notas)
+            VALUES ($userId, '$fecha', '$concepto', '$categoria', $monto, '$metodoPago', '$notas')";
+
+    if ($conn->query($sql)) {
+        echo json_encode(['success' => true, 'id' => $conn->insert_id]);
+    } else {
+        http_response_code(400);
+        echo json_encode(['error' => $conn->error]);
+    }
+}
+
+function updateGastoPersonal($conn, $id) {
+    if (!$id) {
+        http_response_code(400);
+        echo json_encode(['error' => 'ID requerido']);
+        return;
+    }
+
+    $id = intval($id);
+    $data = json_decode(file_get_contents('php://input'), true);
+
+    $updates = [];
+    if (isset($data['user_id'])) $updates[] = 'user_id = ' . intval($data['user_id']);
+    if (isset($data['fecha'])) $updates[] = "fecha = '" . $conn->real_escape_string($data['fecha']) . "'";
+    if (isset($data['concepto'])) $updates[] = "concepto = '" . $conn->real_escape_string($data['concepto']) . "'";
+    if (isset($data['categoria'])) $updates[] = "categoria = '" . $conn->real_escape_string($data['categoria']) . "'";
+    if (isset($data['monto'])) $updates[] = 'monto = ' . floatval($data['monto']);
+    if (isset($data['metodo_pago'])) $updates[] = "metodo_pago = '" . $conn->real_escape_string($data['metodo_pago']) . "'";
+    if (isset($data['notas'])) $updates[] = "notas = '" . $conn->real_escape_string($data['notas']) . "'";
+
+    if (empty($updates)) {
+        http_response_code(400);
+        echo json_encode(['error' => 'No fields to update']);
+        return;
+    }
+
+    $sql = "UPDATE personal_expenses SET " . implode(', ', $updates) . " WHERE id = $id";
+
+    if ($conn->query($sql)) {
+        echo json_encode(['success' => true]);
+    } else {
+        http_response_code(400);
+        echo json_encode(['error' => $conn->error]);
+    }
+}
+
+function deleteGastoPersonal($conn, $id) {
+    if (!$id) {
+        http_response_code(400);
+        echo json_encode(['error' => 'ID requerido']);
+        return;
+    }
+
+    $id = intval($id);
+    $sql = "DELETE FROM personal_expenses WHERE id = $id";
+
+    if ($conn->query($sql)) {
+        echo json_encode(['success' => true]);
+    } else {
+        http_response_code(400);
+        echo json_encode(['error' => $conn->error]);
+    }
+}
+
