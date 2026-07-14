@@ -30,11 +30,11 @@ const content = {
     heroEyebrow: 'Consultoría tecnológica senior para procesos críticos',
     heroTitle: 'Integración empresarial, automatización y tecnología para organizaciones que no pueden detenerse.',
     heroSubtitle:
-      'Ayudamos a empresas de utilities, energía, banca, telecomunicaciones e industria a modernizar procesos críticos mediante Oracle, GIS, datos, APIs e inteligencia artificial aplicada.',
+      'Ayudamos a empresas de utilities, energía, banca, telecomunicaciones e industria a modernizar procesos críticos mediante Oracle, SAP HANA, GIS, datos, APIs e inteligencia artificial aplicada.',
     ctaPrimary: 'Solicitar diagnóstico',
     ctaSecondary: 'Ver servicios',
     heroSideTitle:
-      'Consultoría boutique especializada en integración empresarial, modernización tecnológica, automatización de procesos, Oracle, GIS, datos e inteligencia artificial aplicada al negocio.',
+      'Consultoría boutique especializada en integración empresarial, modernización tecnológica, automatización de procesos, Oracle, SAP HANA, GIS, datos e inteligencia artificial aplicada al negocio.',
     heroSideText:
       'Enfoque ejecutivo para iniciativas de transformación digital con trazabilidad, arquitectura sólida y resultados medibles en entornos de alta criticidad.',
     aboutEyebrow: 'Capacidades',
@@ -46,7 +46,7 @@ const content = {
     servicesEyebrow: 'Servicios',
     servicesTitle: 'Capacidades centrales para integrar, escalar y modernizar',
     servicesSubtitle:
-      'Consultoría tecnológica, integración empresarial, Oracle PL/SQL, ArcGIS Enterprise, GIS corporativo, automatización de procesos y APIs REST.',
+      'Consultoría tecnológica, integración empresarial, Oracle PL/SQL, SAP HANA, ArcGIS Enterprise, GIS corporativo, automatización de procesos y APIs REST.',
     sectorsEyebrow: 'Sectores donde trabajamos',
     sectorsTitle: 'Experiencia en organizaciones reguladas y de alta complejidad',
     whyEyebrow: 'Por qué CGJ 563',
@@ -66,11 +66,11 @@ const content = {
       'Consultora boutique en integración empresarial, modernización tecnológica e inteligencia artificial aplicada.',
     contactBullets: [
       'Servicios para utilities, energía, banca, telecomunicaciones, seguridad e industria.',
-      'Capacidad técnica y funcional para proyectos Oracle, SQL Server, GIS corporativo y APIs REST.',
+      'Capacidad técnica y funcional para proyectos Oracle, SAP HANA, SQL Server, GIS corporativo y APIs REST.',
       'Enfoque comercial, ejecutivo y orientado a resultados medibles.'
     ],
     footerLine1:
-      'CGJ 563 S.A. | Consultoría en integración empresarial, Oracle, GIS, SQL Server, APIs REST e inteligencia artificial aplicada.',
+      'CGJ 563 S.A. | Consultoría en integración empresarial, Oracle, SAP HANA, GIS, SQL Server, APIs REST e inteligencia artificial aplicada.',
     footerLine2: 'Transformación digital para organizaciones que requieren continuidad operativa.',
     languageLabel: 'Idioma',
     fields: {
@@ -104,9 +104,9 @@ const content = {
           'Diseño de arquitecturas de integración entre sistemas corporativos, bases de datos, APIs, GIS, ERP y plataformas operativas.'
       },
       {
-        title: 'Oracle, PL/SQL y bases de datos',
+        title: 'Oracle, SAP HANA, PL/SQL y bases de datos',
         description:
-          'Desarrollo, optimización, mantenimiento y modernización de soluciones basadas en Oracle Database, PL/SQL, SQL Server y procesos batch críticos.'
+          'Desarrollo, optimización, mantenimiento y modernización de soluciones basadas en Oracle Database, SAP HANA, PL/SQL, SQL Server y procesos batch críticos.'
       },
       {
         title: 'GIS corporativo y ArcGIS Enterprise',
@@ -132,7 +132,7 @@ const content = {
     sectors: ['Utilities', 'Energía', 'Gas', 'Seguridad', 'Banca', 'Telecomunicaciones', 'Industria', 'Gobierno'],
     keyPoints: [
       'Más de 35 años de experiencia acumulada en sistemas corporativos.',
-      'Conocimiento profundo de Oracle, SQL Server, GIS, APIs y procesos críticos.',
+      'Conocimiento profundo de Oracle, SAP HANA, SQL Server, GIS, APIs y procesos críticos.',
       'Experiencia en empresas reguladas y de alta criticidad operativa.',
       'Capacidad para dialogar con áreas técnicas, operativas y directivas.',
       'Enfoque práctico, medible y orientado a resultados.'
@@ -161,11 +161,11 @@ const content = {
     heroEyebrow: 'Senior technology consulting for critical processes',
     heroTitle: 'Enterprise integration, automation and technology for organizations that cannot stop.',
     heroSubtitle:
-      'We help companies in utilities, energy, banking, telecommunications and industry modernize critical processes through Oracle, GIS, data, APIs and applied artificial intelligence.',
+      'We help companies in utilities, energy, banking, telecommunications and industry modernize critical processes through Oracle, SAP HANA, GIS, data, APIs and applied artificial intelligence.',
     ctaPrimary: 'Request assessment',
     ctaSecondary: 'View services',
     heroSideTitle:
-      'Boutique consulting specialized in enterprise integration, technology modernization, process automation, Oracle, GIS, data and AI applied to business.',
+      'Boutique consulting specialized in enterprise integration, technology modernization, process automation, Oracle, SAP HANA, GIS, data and AI applied to business.',
     heroSideText:
       'Executive approach for digital transformation initiatives with traceability, solid architecture and measurable outcomes in highly critical environments.',
     aboutEyebrow: 'Capabilities',
@@ -177,7 +177,7 @@ const content = {
     servicesEyebrow: 'Services',
     servicesTitle: 'Core capabilities to integrate, scale and modernize',
     servicesSubtitle:
-      'Technology consulting, enterprise integration, Oracle PL/SQL, ArcGIS Enterprise, corporate GIS, process automation and REST APIs.',
+      'Technology consulting, enterprise integration, Oracle PL/SQL, SAP HANA, ArcGIS Enterprise, corporate GIS, process automation and REST APIs.',
     sectorsEyebrow: 'Industries we serve',
     sectorsTitle: 'Experience in regulated and high-complexity organizations',
     whyEyebrow: 'Why CGJ 563',
@@ -197,11 +197,11 @@ const content = {
       'Boutique consulting firm focused on enterprise integration, technology modernization and applied artificial intelligence.',
     contactBullets: [
       'Services for utilities, energy, banking, telecommunications, security and industry.',
-      'Technical and functional capabilities for Oracle, SQL Server, corporate GIS and REST API projects.',
+      'Technical and functional capabilities for Oracle, SAP HANA, SQL Server, corporate GIS and REST API projects.',
       'Commercial and executive approach focused on measurable outcomes.'
     ],
     footerLine1:
-      'CGJ 563 S.A. | Consulting in enterprise integration, Oracle, GIS, SQL Server, REST APIs and applied artificial intelligence.',
+      'CGJ 563 S.A. | Consulting in enterprise integration, Oracle, SAP HANA, GIS, SQL Server, REST APIs and applied artificial intelligence.',
     footerLine2: 'Digital transformation for organizations that require operational continuity.',
     languageLabel: 'Language',
     fields: {
@@ -235,9 +235,9 @@ const content = {
           'Design of integration architectures across corporate systems, databases, APIs, GIS, ERP and operational platforms.'
       },
       {
-        title: 'Oracle, PL/SQL and databases',
+        title: 'Oracle, SAP HANA, PL/SQL and databases',
         description:
-          'Development, optimization, maintenance and modernization of solutions based on Oracle Database, PL/SQL, SQL Server and critical batch processes.'
+          'Development, optimization, maintenance and modernization of solutions based on Oracle Database, SAP HANA, PL/SQL, SQL Server and critical batch processes.'
       },
       {
         title: 'Corporate GIS and ArcGIS Enterprise',
@@ -263,7 +263,7 @@ const content = {
     sectors: ['Utilities', 'Energy', 'Gas', 'Security', 'Banking', 'Telecommunications', 'Industry', 'Government'],
     keyPoints: [
       'More than 35 years of cumulative experience in corporate systems.',
-      'Deep knowledge of Oracle, SQL Server, GIS, APIs and critical processes.',
+      'Deep knowledge of Oracle, SAP HANA, SQL Server, GIS, APIs and critical processes.',
       'Experience in regulated companies and highly critical operations.',
       'Ability to engage technical, operational and executive teams.',
       'Practical, measurable and results-oriented approach.'
