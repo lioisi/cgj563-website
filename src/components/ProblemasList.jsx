@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { useAPI, callAPI } from '../hooks/useAPI';
+import React, { useState } from 'react';
+import { useAPI } from '../hooks/useAPI';
 import './ProblemasList.css';
 
 export default function ProblemasList() {

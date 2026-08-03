@@ -1,3 +1,9 @@
 <FilesMatch "^(config\.local\.php|config\.local\.example\.php)$">
     Require all denied
 </FilesMatch>
+
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+RewriteRule . /index.html [L]

@@ -2,6 +2,17 @@
   box-sizing: border-box;
 }
 
+:root {
+  --cgj-bordeaux: #7d1f2a;
+  --cgj-bordeaux-dark: #5f1720;
+  --cgj-graphite: #1f2329;
+  --cgj-ink: #111214;
+  --cgj-paper: #ffffff;
+  --cgj-soft: #f4f5f7;
+  --cgj-border: #d9dce2;
+  --cgj-gold: #b7904f;
+}
+
 html,
 body,
 #root {
@@ -12,7 +23,228 @@ body,
 
 body {
   font-family: 'Manrope', 'Plus Jakarta Sans', sans-serif;
-  color: #111214;
-  background: #ffffff;
+  color: var(--cgj-ink);
+  background: var(--cgj-paper);
   line-height: 1.6;
+}
+
+a {
+  color: inherit;
+}
+
+.page-container {
+  margin: 0 auto;
+  width: min(1160px, calc(100% - 2.4rem));
+}
+
+.institutional-header {
+  border-bottom: 1px solid var(--cgj-border);
+  background: var(--cgj-paper);
+}
+
+.institutional-header-inner {
+  min-height: 80px;
+  display: grid;
+  gap: 1rem;
+  align-items: center;
+  grid-template-columns: 1fr;
+  padding: 1rem 0;
+}
+
+.brand-link {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+}
+
+.brand-name {
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: var(--cgj-bordeaux);
+}
+
+.brand-tagline {
+  font-size: 0.8rem;
+  color: #4b5260;
+}
+
+.institutional-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem 1rem;
+}
+
+.institutional-nav a {
+  text-decoration: none;
+  color: #3d4450;
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+.institutional-nav a.active {
+  color: var(--cgj-bordeaux);
+}
+
+.header-cta {
+  justify-self: start;
+  padding: 0.55rem 1rem;
+  background: var(--cgj-bordeaux);
+  color: #fff;
+  text-decoration: none;
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+.page-section {
+  padding: 2.6rem 0;
+}
+
+.breadcrumb ol {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  color: #5a6270;
+  font-size: 0.9rem;
+}
+
+.breadcrumb li + li::before {
+  content: '/';
+  margin-right: 0.35rem;
+}
+
+.section-header-block h1 {
+  margin: 0;
+  font-size: clamp(1.9rem, 2.2vw, 2.6rem);
+  color: var(--cgj-graphite);
+}
+
+.section-eyebrow {
+  margin: 0 0 0.4rem;
+  color: var(--cgj-bordeaux);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.74rem;
+}
+
+.section-description {
+  margin: 0.8rem 0 0;
+  color: #454d5b;
+  max-width: 76ch;
+}
+
+.content-grid {
+  margin-top: 1.8rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.content-card {
+  border: 1px solid var(--cgj-border);
+  border-radius: 14px;
+  padding: 1rem;
+  background: #fff;
+}
+
+.content-card h2 {
+  margin: 0;
+  font-size: 1.03rem;
+  color: var(--cgj-graphite);
+}
+
+.content-card p {
+  margin: 0.5rem 0 0;
+  color: #535d6b;
+}
+
+.cta-strip {
+  background: linear-gradient(160deg, #faf3f4, #fefefe);
+  border-top: 1px solid var(--cgj-border);
+  border-bottom: 1px solid var(--cgj-border);
+}
+
+.cta-strip-inner {
+  padding: 2rem 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cta-strip-inner h2 {
+  margin: 0;
+  color: var(--cgj-graphite);
+}
+
+.cta-strip-inner p {
+  margin: 0.4rem 0 0;
+  color: #535d6b;
+}
+
+.cta-strip-button {
+  background: var(--cgj-bordeaux);
+  color: #fff;
+  text-decoration: none;
+  border-radius: 10px;
+  padding: 0.7rem 1rem;
+  font-weight: 700;
+}
+
+.institutional-footer {
+  background: var(--cgj-graphite);
+  color: #d8dbe1;
+  margin-top: 0;
+}
+
+.institutional-footer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  padding: 2rem 0;
+}
+
+.institutional-footer h2,
+.institutional-footer h3 {
+  color: #fff;
+  margin: 0;
+}
+
+.institutional-footer p,
+.institutional-footer li,
+.institutional-footer a {
+  color: #d8dbe1;
+}
+
+.institutional-footer ul {
+  margin: 0.8rem 0 0;
+  padding-left: 1rem;
+}
+
+.institutional-footer-bottom {
+  border-top: 1px solid #373c45;
+  padding: 0.9rem 0 1.2rem;
+  font-size: 0.9rem;
+}
+
+.notfound {
+  text-align: center;
+}
+
+@media (min-width: 1024px) {
+  .institutional-header-inner {
+    grid-template-columns: auto 1fr auto;
+  }
+
+  .institutional-nav {
+    justify-content: center;
+  }
+
+  .header-cta {
+    justify-self: end;
+  }
 }

@@ -550,7 +550,7 @@ export default function ConsultingSite() {
                 {item.label}
               </a>
             ))}
-            <a href="#dashboard" className="dashboard-access">{t.dashboard}</a>
+            <a href="/dashboard" className="dashboard-access">{t.dashboard}</a>
             <label className="language-switcher" htmlFor="language-select">
               <span>{t.languageLabel}</span>
               <select

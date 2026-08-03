@@ -170,8 +170,8 @@ function PersonalExpensesApp() {
   const { data: users, loading: loadingUsers, error: usersError } = useAPI('internal_users');
   const { data: expenses, loading: loadingExpenses, error: expensesError } = useAPI('gastos_personales');
 
-  const safeUsers = Array.isArray(users) ? users : [];
-  const safeExpenses = Array.isArray(expenses) ? expenses : [];
+  const safeUsers = useMemo(() => (Array.isArray(users) ? users : []), [users]);
+  const safeExpenses = useMemo(() => (Array.isArray(expenses) ? expenses : []), [expenses]);
 
   const [selectedUserId, setSelectedUserId] = useState('all');
   const [saving, setSaving] = useState(false);

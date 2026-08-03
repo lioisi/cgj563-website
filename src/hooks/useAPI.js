@@ -62,33 +62,29 @@ export function useAPI(action, id = null) {
 
 // Función genérica para POST/PUT/DELETE
 export async function callAPI(action, method, id = null, payload = null) {
-  try {
-    let url = `${API_BASE_URL}?action=${action}`;
-    if (id) url += `&id=${id}`;
+  let url = `${API_BASE_URL}?action=${action}`;
+  if (id) url += `&id=${id}`;
 
-    const adminToken = getAdminToken();
-    if (!adminToken) {
-      throw new Error('Sesion expirada. Inicia sesion nuevamente.');
-    }
-
-    const options = {
-      method,
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Admin-Token': adminToken
-      }
-    };
-
-    if (payload) options.body = JSON.stringify(payload);
-
-    const response = await fetch(url, options);
-    const rawText = await response.text();
-    const result = parseApiJson(rawText);
-
-    if (!response.ok) throw new Error(result.error || 'API Error');
-
-    return result;
-  } catch (err) {
-    throw err;
+  const adminToken = getAdminToken();
+  if (!adminToken) {
+    throw new Error('Sesion expirada. Inicia sesion nuevamente.');
   }
+
+  const options = {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Admin-Token': adminToken
+    }
+  };
+
+  if (payload) options.body = JSON.stringify(payload);
+
+  const response = await fetch(url, options);
+  const rawText = await response.text();
+  const result = parseApiJson(rawText);
+
+  if (!response.ok) throw new Error(result.error || 'API Error');
+
+  return result;
 }

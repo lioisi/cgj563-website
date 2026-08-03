@@ -1,61 +1,85 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { BrowserRouter, Navigate, Route, Routes, useNavigate } from 'react-router-dom';
 import './App.css';
 import ConsultingSite from './components/ConsultingSite';
 import Dashboard from './components/Dashboard';
 import Login from './components/Login';
+import { institutionalPages } from './content/institutionalPages';
+import InstitutionalPage from './pages/InstitutionalPage';
+import NotFoundPage from './pages/NotFoundPage';
 
-function App() {
-  const [page, setPage] = useState('home');
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+function DashboardRoute() {
+  const navigate = useNavigate();
+  const [isAuthenticated, setIsAuthenticated] = useState(() => Boolean(localStorage.getItem('dashboardToken')));
 
-  useEffect(() => {
-    // Verificar si ya está autenticado
-    const token = localStorage.getItem('dashboardToken');
-    if (token) {
-      setIsAuthenticated(true);
-    }
-
-    // Detectar ruta por hash
-    const handleHashChange = () => {
-      const hash = window.location.hash.slice(1) || 'home';
-      setPage(hash);
-    };
-
-    handleHashChange();
-    window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
-  }, []);
-
-  const handleLogin = () => {
-    setIsAuthenticated(true);
-  };
+  const handleLogin = () => setIsAuthenticated(true);
 
   const handleLogout = () => {
     localStorage.removeItem('dashboardToken');
     setIsAuthenticated(false);
-    window.location.hash = '#home';
+    navigate('/');
   };
 
-  // Página del dashboard
-  if (page === 'dashboard') {
-    if (!isAuthenticated) {
-      return <Login onLogin={handleLogin} />;
-    }
-
-    return (
-      <div className="dashboard-shell">
-        <div className="dashboard-shell-header">
-          <a href="#home" className="dashboard-shell-link">Volver al sitio</a>
-          <button className="dashboard-shell-logout" onClick={handleLogout}>
-            Cerrar sesión
-          </button>
-        </div>
-        <Dashboard />
-      </div>
-    );
+  if (!isAuthenticated) {
+    return <Login onLogin={handleLogin} />;
   }
 
-  return <ConsultingSite />;
+  return (
+    <div className="dashboard-shell">
+      <div className="dashboard-shell-header">
+        <a href="/" className="dashboard-shell-link">Volver al sitio</a>
+        <button className="dashboard-shell-logout" onClick={handleLogout}>
+          Cerrar sesión
+        </button>
+      </div>
+      <Dashboard />
+    </div>
+  );
+}
+
+function HashDashboardRedirect() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const syncHashRoute = () => {
+      if (window.location.hash === '#dashboard') {
+        navigate('/dashboard', { replace: true });
+      }
+    };
+
+    syncHashRoute();
+    window.addEventListener('hashchange', syncHashRoute);
+    return () => window.removeEventListener('hashchange', syncHashRoute);
+  }, [navigate]);
+
+  return null;
+}
+
+function AppRouter() {
+  const pages = useMemo(() => Object.values(institutionalPages), []);
+
+  return (
+    <>
+      <HashDashboardRedirect />
+      <Routes>
+        <Route path="/" element={<ConsultingSite />} />
+        <Route path="/home" element={<Navigate to="/" replace />} />
+        <Route path="/dashboard" element={<DashboardRoute />} />
+        {pages.map((page) => (
+          <Route key={page.path} path={page.path} element={<InstitutionalPage page={page} />} />
+        ))}
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+    </>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AppRouter />
+    </BrowserRouter>
+  );
 }
 
 export default App;
