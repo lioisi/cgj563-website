@@ -4,7 +4,8 @@ export default function Contact() {
   const [formData, setFormData] = useState({
     nombre: '',
     email: '',
-    mensaje: ''
+    mensaje: '',
+    botcheck: ''
   });
   const [enviando, setEnviando] = useState(false);
   const [mensaje, setMensaje] = useState('');
@@ -18,28 +19,30 @@ export default function Contact() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     setEnviando(true);
     setMensaje('');
 
     try {
-      const response = await fetch('https://api.web3forms.com/submit', {
+      const response = await fetch('/contact.php', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          access_key: '888f9532-5f3b-4e0c-ba08-d5281e9b0b5b',
           name: formData.nombre,
           email: formData.email,
           message: formData.mensaje,
-              subject: 'Nuevo contacto desde CGJ563.com'
+          subject: 'Nuevo contacto desde CGJ563.com',
+          botcheck: formData.botcheck
         })
       });
 
-      if (response.ok) {
+      const result = await response.json().catch(() => ({}));
+
+      if (response.ok && result.success) {
         setMensaje('✓ Mensaje enviado exitosamente. Nos contactaremos pronto.');
-        setFormData({ nombre: '', email: '', mensaje: '' });
+        setFormData({ nombre: '', email: '', mensaje: '', botcheck: '' });
       } else {
         setMensaje('Error al enviar. Intenta de nuevo.');
       }
@@ -99,6 +102,15 @@ export default function Contact() {
               required
               disabled={enviando}
             ></textarea>
+            <input
+              type="text"
+              name="botcheck"
+              value={formData.botcheck}
+              onChange={handleChange}
+              tabIndex={-1}
+              autoComplete="off"
+              style={{ display: 'none' }}
+            />
             <button type="submit" className="submit-button" disabled={enviando}>
               {enviando ? 'Enviando...' : 'Enviar'}
             </button>

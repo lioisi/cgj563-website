@@ -365,13 +365,16 @@ function ContactForm({ language }) {
     empresa: '',
     email: '',
     telefono: '',
-    mensaje: ''
+    mensaje: '',
+    botcheck: ''
   });
   const [sending, setSending] = useState(false);
   const [feedback, setFeedback] = useState('');
 
   const canSubmit = useMemo(() => {
-    return Object.values(formData).every((value) => value.trim().length > 0);
+    return [formData.nombre, formData.empresa, formData.email, formData.telefono, formData.mensaje].every(
+      (value) => value.trim().length > 0
+    );
   }, [formData]);
 
   const handleChange = (event) => {
@@ -387,27 +390,27 @@ function ContactForm({ language }) {
     setFeedback('');
 
     try {
-      const response = await fetch('https://api.web3forms.com/submit', {
+      const response = await fetch('/contact.php', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json'
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          access_key: '888f9532-5f3b-4e0c-ba08-d5281e9b0b5b',
           subject: t.form.subject,
-          from_name: 'Sitio CGJ 563 S.A.',
           name: formData.nombre,
           company: formData.empresa,
           email: formData.email,
           phone: formData.telefono,
-          message: formData.mensaje
+          message: formData.mensaje,
+          botcheck: formData.botcheck
         })
       });
 
-      if (response.ok) {
+      const result = await response.json().catch(() => ({}));
+
+      if (response.ok && result.success) {
         setFeedback(t.form.success);
-        setFormData({ nombre: '', empresa: '', email: '', telefono: '', mensaje: '' });
+        setFormData({ nombre: '', empresa: '', email: '', telefono: '', mensaje: '', botcheck: '' });
       } else {
         setFeedback(t.form.error);
       }
@@ -480,6 +483,16 @@ function ContactForm({ language }) {
           required
         />
       </label>
+
+      <input
+        type="text"
+        name="botcheck"
+        value={formData.botcheck}
+        onChange={handleChange}
+        tabIndex={-1}
+        autoComplete="off"
+        style={{ display: 'none' }}
+      />
 
       <button type="submit" className="btn-primary" disabled={sending || !canSubmit}>
         {sending ? t.form.sending : t.form.submit}

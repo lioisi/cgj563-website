@@ -1,5 +1,11 @@
 import { useState, useEffect } from 'react';
 
+const API_BASE_URL = 'https://cgj563.com/api.php';
+
+function getAdminToken() {
+  return localStorage.getItem('dashboardToken') || '';
+}
+
 function parseApiJson(rawText) {
   const cleanText = rawText.trim();
 
@@ -32,7 +38,7 @@ export function useAPI(action, id = null) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        let url = `https://cgj563.com/api.php?action=${action}`;
+        let url = `${API_BASE_URL}?action=${action}`;
         if (id) url += `&id=${id}`;
         
         const response = await fetch(url);
@@ -57,12 +63,20 @@ export function useAPI(action, id = null) {
 // Función genérica para POST/PUT/DELETE
 export async function callAPI(action, method, id = null, payload = null) {
   try {
-    let url = `https://cgj563.com/api.php?action=${action}`;
+    let url = `${API_BASE_URL}?action=${action}`;
     if (id) url += `&id=${id}`;
+
+    const adminToken = getAdminToken();
+    if (!adminToken) {
+      throw new Error('Sesion expirada. Inicia sesion nuevamente.');
+    }
 
     const options = {
       method,
-      headers: { 'Content-Type': 'application/json' }
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Admin-Token': adminToken
+      }
     };
 
     if (payload) options.body = JSON.stringify(payload);

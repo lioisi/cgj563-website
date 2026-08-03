@@ -6,15 +6,86 @@
  */
 
 header('Content-Type: application/json; charset=utf-8');
-header('Access-Control-Allow-Origin: *');
+
+$allowed_origins = [
+    'https://cgj563.com',
+    'http://localhost:5173',
+    'http://127.0.0.1:5173'
+];
+
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+if ($origin && in_array($origin, $allowed_origins, true)) {
+    header("Access-Control-Allow-Origin: $origin");
+    header('Vary: Origin');
+} elseif (!$origin) {
+    // Fallback for same-origin or direct calls without Origin header.
+    header('Access-Control-Allow-Origin: https://cgj563.com');
+}
+
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
+header('Access-Control-Allow-Headers: Content-Type, X-Admin-Token');
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(204);
+    exit;
+}
+
+function configOrFail($envKey, $localKey, $localConfig) {
+    $envValue = getenv($envKey);
+    if ($envValue !== false && $envValue !== '') {
+        return $envValue;
+    }
+
+    $localValue = $localConfig[$localKey] ?? '';
+    if ($localValue !== '') {
+        return $localValue;
+    }
+
+    http_response_code(500);
+    echo json_encode(['error' => "Missing server config: $envKey"]);
+    exit;
+}
+
+function enforceWriteAuth($expectedToken) {
+    $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
+    if (!in_array($method, ['POST', 'PUT', 'DELETE'], true)) {
+        return;
+    }
+
+    if (!$expectedToken) {
+        http_response_code(503);
+        echo json_encode(['error' => 'Write operations are temporarily disabled by server policy.']);
+        exit;
+    }
+
+    $providedToken = $_SERVER['HTTP_X_ADMIN_TOKEN'] ?? '';
+    if (!$providedToken || !hash_equals($expectedToken, $providedToken)) {
+        http_response_code(401);
+        echo json_encode(['error' => 'Unauthorized']);
+        exit;
+    }
+}
+
+$localConfig = [];
+$localConfigPath = __DIR__ . '/config.local.php';
+if (is_file($localConfigPath)) {
+    $loaded = require $localConfigPath;
+    if (is_array($loaded)) {
+        $localConfig = $loaded;
+    }
+}
 
 // Configuración BD
-$host = 'localhost';
-$user = 'a0150879_dbcgj';
-$password = '13GIbizelo';
-$database = 'a0150879_dbcgj';
+$host = configOrFail('CGJ_DB_HOST', 'db_host', $localConfig);
+$user = configOrFail('CGJ_DB_USER', 'db_user', $localConfig);
+$password = configOrFail('CGJ_DB_PASS', 'db_pass', $localConfig);
+$database = configOrFail('CGJ_DB_NAME', 'db_name', $localConfig);
+$adminToken = getenv('CGJ_ADMIN_TOKEN');
+if (($adminToken === false || $adminToken === '') && isset($localConfig['admin_token'])) {
+    $adminToken = $localConfig['admin_token'];
+}
+
+enforceWriteAuth($adminToken);
 
 $conn = new mysqli($host, $user, $password, $database);
 $conn->set_charset("utf8mb4");

@@ -11,13 +11,19 @@ export default function Login({ onLogin }) {
     setLoading(true);
     setError('');
 
-    // Verificar contraseña
-    if (password === 'Mohabon') {
-      // Guardar token en localStorage
-      localStorage.setItem('dashboardToken', 'authenticated');
+    const adminToken = password.trim();
+
+    if (adminToken.length < 12) {
+      setError('Token invalido. Verifica las credenciales de acceso.');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      localStorage.setItem('dashboardToken', adminToken);
       onLogin();
-    } else {
-      setError('❌ Contraseña incorrecta');
+    } catch {
+      setError('No se pudo iniciar sesion. Intenta nuevamente.');
       setPassword('');
     }
 
@@ -29,18 +35,18 @@ export default function Login({ onLogin }) {
       <div className="login-card">
         <div className="login-header">
           <h1>🔒 Dashboard Protegido</h1>
-          <p>Ingresa la contraseña para acceder</p>
+          <p>Ingresa tu token de acceso para operar el dashboard</p>
         </div>
 
         <form onSubmit={handleSubmit} className="login-form">
           <div className="form-group">
-            <label htmlFor="password">Contraseña</label>
+            <label htmlFor="password">Token</label>
             <input
               id="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Ingresa la contraseña"
+              placeholder="Ingresa tu token"
               autoFocus
               disabled={loading}
             />
