@@ -11,7 +11,7 @@ const navItems = [
   { to: '/contacto', label: 'Contacto' }
 ];
 
-export default function SiteShell({ children }) {
+export default function SiteShell({ children, headerAddon = null, footerLines = [] }) {
   return (
     <div className="institutional-shell">
       <header className="institutional-header">
@@ -27,6 +27,7 @@ export default function SiteShell({ children }) {
               </NavLink>
             ))}
           </nav>
+          {headerAddon && <div className="shell-header-addon">{headerAddon}</div>}
           <Link to="/contacto" className="header-cta">Solicitar diagnostico</Link>
         </div>
       </header>
@@ -37,10 +38,14 @@ export default function SiteShell({ children }) {
         <div className="page-container institutional-footer-grid">
           <div>
             <h2>CGJ563 S.A.</h2>
-            <p>
-              Consultora de transformacion operativa e integracion tecnologica para organizaciones
-              que necesitan mejorar procesos, integrar sistemas y trabajar con datos confiables.
-            </p>
+            {footerLines.length > 0 ? (
+              footerLines.map((line) => <p key={line}>{line}</p>)
+            ) : (
+              <p>
+                Consultora de transformacion operativa e integracion tecnologica para organizaciones
+                que necesitan mejorar procesos, integrar sistemas y trabajar con datos confiables.
+              </p>
+            )}
           </div>
           <div>
             <h3>Secciones</h3>

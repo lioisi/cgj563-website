@@ -1,25 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import './ConsultingSite.css';
-import LogoSVG from './LogoSVG';
+import SiteShell from './common/SiteShell';
 import heroImage from '../assets/hero.png';
 
 const WHATSAPP_PHONE = '541136154077';
-const navItems = {
-  es: [
-    { href: '#home', label: 'Inicio' },
-    { href: '#que-hacemos', label: 'Capacidades' },
-    { href: '#servicios', label: 'Servicios' },
-    { href: '#sectores', label: 'Sectores' },
-    { href: '#contacto', label: 'Contacto' }
-  ],
-  en: [
-    { href: '#home', label: 'Home' },
-    { href: '#que-hacemos', label: 'Capabilities' },
-    { href: '#servicios', label: 'Services' },
-    { href: '#sectores', label: 'Sectors' },
-    { href: '#contacto', label: 'Contact' }
-  ]
-};
 
 const content = {
   es: {
@@ -504,7 +488,6 @@ function ContactForm({ language }) {
 }
 
 export default function ConsultingSite() {
-  const [menuOpen, setMenuOpen] = useState(false);
   const [language, setLanguage] = useState(() => localStorage.getItem('siteLanguage') || 'es');
 
   useEffect(() => {
@@ -514,59 +497,29 @@ export default function ConsultingSite() {
 
   const t = content[language];
   const whatsappLink = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(t.whatsappMessage)}`;
+  const headerAddon = (
+    <>
+      <a href="/dashboard">{t.dashboard}</a>
+      <label htmlFor="language-select-shell">
+        <span>{t.languageLabel}</span>
+        <select
+          id="language-select-shell"
+          value={language}
+          onChange={(e) => setLanguage(e.target.value)}
+        >
+          <option value="es">ES</option>
+          <option value="en">EN</option>
+        </select>
+      </label>
+    </>
+  );
 
   return (
-    <div className="consulting-site">
-      <header className="topbar">
-        <div className="site-container topbar-inner">
-          <a href="#home" className="brand-block" onClick={() => setMenuOpen(false)}>
-            <span className="brand-logo" aria-hidden="true">
-              <LogoSVG />
-            </span>
-            <span className="brand-copy">
-              <span className="brand-name">CGJ 563 S.A.</span>
-              <span className="brand-tag">{t.brandTag}</span>
-            </span>
-          </a>
-
-          <button
-            type="button"
-            className="menu-button"
-            aria-label={t.openMenu}
-            onClick={() => setMenuOpen((prev) => !prev)}
-          >
-            <span />
-            <span />
-            <span />
-          </button>
-
-          <nav className={`topnav ${menuOpen ? 'open' : ''}`}>
-            {navItems[language].map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                onClick={() => setMenuOpen(false)}
-              >
-                {item.label}
-              </a>
-            ))}
-            <a href="/dashboard" className="dashboard-access">{t.dashboard}</a>
-            <label className="language-switcher" htmlFor="language-select">
-              <span>{t.languageLabel}</span>
-              <select
-                id="language-select"
-                value={language}
-                onChange={(e) => setLanguage(e.target.value)}
-              >
-                <option value="es">ES</option>
-                <option value="en">EN</option>
-              </select>
-            </label>
-          </nav>
-        </div>
-      </header>
-
-      <main>
+    <SiteShell
+      headerAddon={headerAddon}
+      footerLines={[t.footerLine1, t.footerLine2]}
+    >
+      <div className="consulting-site">
         <section id="home" className="hero-section">
           <div className="site-container hero-grid">
             <div>
@@ -694,7 +647,7 @@ export default function ConsultingSite() {
             <ContactForm language={language} />
           </div>
         </Section>
-      </main>
+      </div>
 
       <a
         href={whatsappLink}
@@ -706,12 +659,6 @@ export default function ConsultingSite() {
         <img className="whatsapp-float-icon" src="/whatsapp.png" alt="" aria-hidden="true" />
       </a>
 
-      <footer className="site-footer">
-        <div className="site-container footer-content">
-          <p>{t.footerLine1}</p>
-          <p>{t.footerLine2}</p>
-        </div>
-      </footer>
-    </div>
+    </SiteShell>
   );
 }

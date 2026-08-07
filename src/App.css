@@ -85,6 +85,38 @@ a {
   color: var(--cgj-bordeaux);
 }
 
+.shell-header-addon {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  justify-self: start;
+}
+
+.shell-header-addon a {
+  text-decoration: none;
+  color: #3d4450;
+  border: 1px solid var(--cgj-border);
+  border-radius: 999px;
+  padding: 0.42rem 0.72rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.shell-header-addon label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+  color: #596170;
+}
+
+.shell-header-addon select {
+  border: 1px solid var(--cgj-border);
+  border-radius: 999px;
+  padding: 0.25rem 0.5rem;
+  font: inherit;
+}
+
 .header-cta {
   justify-self: start;
   padding: 0.55rem 1rem;
@@ -237,11 +269,15 @@ a {
 
 @media (min-width: 1024px) {
   .institutional-header-inner {
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: auto 1fr auto auto;
   }
 
   .institutional-nav {
     justify-content: center;
+  }
+
+  .shell-header-addon {
+    justify-self: end;
   }
 
   .header-cta {
