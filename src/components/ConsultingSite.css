@@ -322,6 +322,7 @@
 .section-block {
   padding: 4.3rem 0;
   border-bottom: 1px solid rgba(68, 104, 131, 0.48);
+  scroll-margin-top: 96px;
 }
 
 .section-head {

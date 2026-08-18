@@ -13,7 +13,7 @@ export default function Login({ onLogin }) {
 
     const adminToken = password.trim();
 
-    if (adminToken.length < 12) {
+    if (adminToken.length < 8) {
       setError('Token invalido. Verifica las credenciales de acceso.');
       setLoading(false);
       return;

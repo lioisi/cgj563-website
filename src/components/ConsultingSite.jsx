@@ -4,7 +4,6 @@ import SiteShell from './common/SiteShell';
 import heroImage from '../assets/hero.png';
 
 const WHATSAPP_PHONE = '541136154077';
-
 const content = {
   es: {
     whatsappMessage: 'Hola, quisiera recibir información sobre sus servicios de consultoría.',

@@ -1,4 +1,5 @@
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useLocation } from 'react-router-dom';
+import LogoSVG from '../LogoSVG';
 
 const navItems = [
   { to: '/servicios', label: 'Servicios' },
@@ -11,24 +12,46 @@ const navItems = [
   { to: '/contacto', label: 'Contacto' }
 ];
 
+const landingNavItems = [
+  { to: '#home', label: 'Inicio' },
+  { to: '#que-hacemos', label: 'Capacidades' },
+  { to: '#servicios', label: 'Servicios' },
+  { to: '#sectores', label: 'Sectores' },
+  { to: '#contacto', label: 'Contacto' }
+];
+
 export default function SiteShell({ children, headerAddon = null, footerLines = [] }) {
+  const location = useLocation();
+  const items = location.pathname === '/' ? landingNavItems : navItems;
+
   return (
     <div className="institutional-shell">
       <header className="institutional-header">
         <div className="page-container institutional-header-inner">
           <Link className="brand-link" to="/">
-            <span className="brand-name">CGJ563 S.A.</span>
-            <span className="brand-tagline">Procesos, datos y tecnologia trabajando como un unico sistema.</span>
+            <span className="brand-mark" aria-hidden="true"><LogoSVG /></span>
+            <span className="brand-copy">
+              <span className="brand-name">CGJ563 S.A.</span>
+              <span className="brand-tagline">Procesos, datos y tecnologia trabajando como un unico sistema.</span>
+            </span>
           </Link>
           <nav aria-label="Navegacion principal" className="institutional-nav">
-            {navItems.map((item) => (
-              <NavLink key={item.to} to={item.to} className={({ isActive }) => (isActive ? 'active' : '')}>
-                {item.label}
-              </NavLink>
+            {items.map((item) => (
+              item.to.startsWith('#') ? (
+                <a key={item.to} href={item.to}>{item.label}</a>
+              ) : (
+                <NavLink key={item.to} to={item.to} className={({ isActive }) => (isActive ? 'active' : '')}>
+                  {item.label}
+                </NavLink>
+              )
             ))}
           </nav>
           {headerAddon && <div className="shell-header-addon">{headerAddon}</div>}
-          <Link to="/contacto" className="header-cta">Solicitar diagnostico</Link>
+          {location.pathname === '/' ? (
+            <a href="#contacto" className="header-cta">Solicitar diagnostico</a>
+          ) : (
+            <Link to="/contacto" className="header-cta">Solicitar diagnostico</Link>
+          )}
         </div>
       </header>
 

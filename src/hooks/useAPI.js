@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 
 const API_BASE_URL = 'https://cgj563.com/api.php';
+const AMEPORT_API_BASE_URL = '/ameport_api.php';
 
 function getAdminToken() {
   return localStorage.getItem('dashboardToken') || '';
@@ -86,5 +87,49 @@ export async function callAPI(action, method, id = null, payload = null) {
 
   if (!response.ok) throw new Error(result.error || 'API Error');
 
+  return result;
+}
+
+export function useAmeportAPI(action, query = '') {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`${AMEPORT_API_BASE_URL}?action=${action}${query ? `&${query}` : ''}`);
+        const rawText = await response.text();
+        const result = parseApiJson(rawText);
+        if (!response.ok) throw new Error(result.error || 'AMEPORT API Error');
+        if (!cancelled) setData(result.data);
+      } catch (err) {
+        if (!cancelled) setError(err.message);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+
+    fetchData();
+    return () => { cancelled = true; };
+  }, [action, query]);
+
+  return { data, loading, error };
+}
+
+export async function callAmeportAPI(action, method, id = null, payload = null) {
+  const token = getAdminToken();
+  if (!token) throw new Error('Sesion expirada. Inicia sesion nuevamente.');
+  const url = `${AMEPORT_API_BASE_URL}?action=${action}${id ? `&id=${id}` : ''}`;
+  const options = {
+    method,
+    headers: { 'Content-Type': 'application/json', 'X-Admin-Token': token }
+  };
+  if (payload) options.body = JSON.stringify(payload);
+  const response = await fetch(url, options);
+  const rawText = await response.text();
+  const result = parseApiJson(rawText);
+  if (!response.ok) throw new Error(result.error || 'AMEPORT API Error');
   return result;
 }
